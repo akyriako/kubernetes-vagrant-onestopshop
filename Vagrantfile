@@ -56,6 +56,14 @@ Vagrant.configure("2") do |config|
           worker.vm.provision "shell", path:"nginx/install.sh"
           worker.vm.provision "shell", path:"cert-manager/install.sh"
           worker.vm.provision "shell", path:"longhorn/install.sh"
+
+          worker.vm.provision "shell", inline: <<-SHELL 
+            echo ">>> CLEANING UP"
+            rm -f /vagrant/kubeadm/admin.conf 
+            rm -rf $HOME/.kube
+
+            SHELL
+
           else
         end
 
@@ -64,7 +72,7 @@ Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |vb|
       vb.memory = "3072"
       vb.cpus = "1"
-      vb.customize ["modifyvm", :id, "--nic1", "nat"]
+      vb.customize ["modifyvm", :id, "--nic1", "nat"", --groups", "/KUBE-LABS"]
     end
   end
 
