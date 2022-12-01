@@ -3,4 +3,4 @@ configInline:
    - name: default
      protocol: layer2
      addresses:
-     - 192.168.1.240-192.168.1.250
+     - $METALLB_ADDRESS_POOL

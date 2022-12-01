@@ -1,3 +1,5 @@
 .vagrant/
 
 init-worker.sh
+metallb/helm/overrides.yaml
+kubeadm/admin.conf

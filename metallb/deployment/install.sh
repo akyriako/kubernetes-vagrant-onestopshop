@@ -2,10 +2,11 @@
 
 echo ">>> INSTALL METALLB"
 
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
 
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
+echo ">>> WAITING METALLB PODS TO GET READY (2m0)"
+sleep 120
 
-envsubst < /vagrant/metallb/deployment/config-map.yaml | kubectl apply -f -
+envsubst < /vagrant/metallb/deployment/ipaddresspool.yaml | kubectl apply -f -
 
 

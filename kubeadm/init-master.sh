@@ -14,10 +14,15 @@ echo ">>> CONFIGURE KUBECTL"
 sudo mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
+sudo chown -R $(id -u) $HOME/.kube
 
 mkdir -p /home/vagrant/.kube
 sudo cp -f /etc/kubernetes/admin.conf /home/vagrant/.kube/config
-sudo chown $(id -u):$(id -g) /home/vagrant/.kube/config
+sudo chown vagrant /home/vagrant/.kube/config
+sudo chown -R vagrant /home/vagrant/.kube
+
+rm -f /vagrant/kubeadm/admin.conf
+sudo cp -i /etc/kubernetes/admin.conf /vagrant/kubeadm/admin.conf
 
 # ./vagrant/kubeadm/kubectl.sh
 
@@ -29,12 +34,10 @@ if [ "$K8S_POD_NETWORK_TYPE" == "calico" ]
 then 
   echo ">>> DEPLOY POD NETWORK > CALICO"
   kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.1/manifests/tigera-operator.yaml
-  # kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.1/manifests/custom-resources.yaml
-
-  envsubst < /vagrant/cni/calico/custom-resources.yaml | kubectl apply -f -
+  envsubst < /vagrant/cni/calico/operator/custom-resources.yaml | kubectl apply -f -
 else
   echo ">>> DEPLOY POD NETWORK > FLANNEL"
-   envsubst < /vagrant/cni/flannel/flannel.yml | kubectl apply -f -
+  envsubst < /vagrant/cni/flannel/flannel.yml | kubectl apply -f -
 fi
 
 sudo systemctl daemon-reload
