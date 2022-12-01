@@ -3,7 +3,7 @@ pod_network_cidr = "10.244.0.0/16"
 pod_network_type = "calico" # choose between calico and flannel
 master_node_ip = "192.168.57.100"
 metallb_address_pool = "192.168.57.200-192.168.57.240"
-version = "1.25.4-00"
+version = "1.24.4-00"
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false
@@ -52,10 +52,10 @@ Vagrant.configure("2") do |config|
             SHELL
           
           worker.vm.provision "shell", path:"helm/install.sh"
-          # master.vm.provision "shell", path:"longhorn/install.sh"
           worker.vm.provision "shell", path:"metallb/deployment/install.sh", env: {"METALLB_ADDRESS_POOL" => metallb_address_pool }
           worker.vm.provision "shell", path:"nginx/install.sh"
-
+          worker.vm.provision "shell", path:"cert-manager/install.sh"
+          worker.vm.provision "shell", path:"longhorn/install.sh"
           else
         end
 
