@@ -8,5 +8,6 @@ echo ">>> WAITING METALLB PODS TO GET READY (2m0)"
 sleep 120
 
 envsubst < /vagrant/metallb/deployment/ipaddresspool.yaml | kubectl apply -f -
+kubectl apply -f /vagrant/metallb/deployment/l2advertisement.yaml
 
 
