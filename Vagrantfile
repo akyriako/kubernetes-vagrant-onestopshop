@@ -52,7 +52,7 @@ Vagrant.configure("2") do |config|
             SHELL
           
           worker.vm.provision "shell", path:"helm/install.sh"
-          worker.vm.provision "shell", path:"metallb/deployment/install.sh", env: {"METALLB_ADDRESS_POOL" => metallb_address_pool }
+          worker.vm.provision "shell", path:"metallb/install.sh", env: {"METALLB_ADDRESS_POOL" => metallb_address_pool }
           worker.vm.provision "shell", path:"nginx/install.sh"
           worker.vm.provision "shell", path:"cert-manager/install.sh"
           worker.vm.provision "shell", path:"longhorn/install.sh"
