@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
       master.vm.provision "shell", path:"helm/install.sh"
       master.vm.provision "shell", path:"k9s/install.sh"
     end
-    (1..2).each do |nodeIndex|
+    (1..3).each do |nodeIndex|
       config.vm.define "worker-#{nodeIndex}" do |worker|
         worker.vm.box = "ubuntu/focal64"
         worker.vm.hostname = "node-#{nodeIndex}.#{domain}"
@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
             SHELL
         worker.vm.provision "shell", path:"longhorn/bootstrap.sh" 
 
-        if nodeIndex == 2
+        if nodeIndex == 3
           worker.vm.provision "shell", env: { "NODE_INDEX" => nodeIndex}, inline: <<-SHELL 
             echo ">>> WAITING COREDNS, POD-NETWORK, KUBE-PROXY PODS TO GET READY (3m0)"
             sleep 180
@@ -53,9 +53,10 @@ Vagrant.configure("2") do |config|
           
           worker.vm.provision "shell", path:"helm/install.sh"
           worker.vm.provision "shell", path:"metallb/install.sh", env: {"METALLB_ADDRESS_POOL" => metallb_address_pool }
-          worker.vm.provision "shell", path:"nginx/install.sh"
+          # worker.vm.provision "shell", path:"nginx/install.sh"
           worker.vm.provision "shell", path:"cert-manager/install.sh"
           worker.vm.provision "shell", path:"longhorn/install.sh"
+          worker.vm.provision "shell", path:"monitoring/install.sh"
 
           worker.vm.provision "shell", inline: <<-SHELL 
             echo ">>> CLEANING UP"
@@ -72,7 +73,7 @@ Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |vb|
       vb.memory = "3072"
       vb.cpus = "1"
-      vb.customize ["modifyvm", :id, "--nic1", "nat"", --groups", "/KUBE-LABS"]
+      vb.customize ["modifyvm", :id, "--nic1", "nat"]
     end
   end
 
